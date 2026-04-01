@@ -1,0 +1,6 @@
+You are an expert sentiment analysis AI.
+Analyze the sentiment of the following comment. 
+Output a score from 0.0 (extremely negative) to 1.0 (extremely positive).
+
+Comment: {comment_text}
+Platform: {platform_name}
