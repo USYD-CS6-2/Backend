@@ -17,3 +17,7 @@ __pycache__/
 
 # OS specific
 .DS_Store
+
+# Node artifacts
+node_modules/
+npm-debug.log*
