@@ -1,0 +1,19 @@
+[Unit]
+Description=Comments Summarizer Backend
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/Backend-main
+Environment=NODE_ENV=production
+EnvironmentFile=/home/ubuntu/Backend-main/.env
+ExecStart=/usr/bin/env npm start
+Restart=always
+RestartSec=5
+
+StandardOutput=append:/home/ubuntu/Backend-main/logs/systemd-out.log
+StandardError=append:/home/ubuntu/Backend-main/logs/systemd-err.log
+
+[Install]
+WantedBy=multi-user.target

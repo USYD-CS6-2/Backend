@@ -19,7 +19,7 @@ app.get('/api/v1/health', (req, res) => {
   });
 });
 
-app.post('/api/v1/analyze', async (req, res) => {
+app.post('/api/v1/analyze', async (req, res, next) => {
   const requestId = randomUUID();
   const parsed = analyzeRequestSchema.safeParse(req.body);
 
@@ -32,11 +32,17 @@ app.post('/api/v1/analyze', async (req, res) => {
     });
   }
 
-  const result = await analyzeComments(parsed.data);
-  return res.status(200).json({
-    request_id: requestId,
-    ...result,
-  });
+  try {
+    const result = await analyzeComments(parsed.data, { requestId });
+
+    return res.status(200).json({
+      request_id: requestId,
+      ...result,
+    });
+  } catch (err) {
+    err.requestId = requestId;
+    return next(err);
+  }
 });
 
 app.use((req, res) => {
@@ -45,6 +51,19 @@ app.use((req, res) => {
     error_code: 'NOT_FOUND',
     message: 'Route not found.',
     request_id: randomUUID(),
+  });
+});
+
+app.use((err, req, res, next) => {
+  void req;
+  void next;
+
+  const requestId = err.requestId || randomUUID();
+
+  res.status(500).json({
+    error_code: err.code || 'INTERNAL_SERVER_ERROR',
+    message: err.message || 'Unexpected server error.',
+    request_id: requestId,
   });
 });
 
