@@ -1,7 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const { randomUUID } = require('node:crypto');
-const { analyzeRequestSchema } = require('./schemas/analyzeSchema');
+const {
+  analyzeRequestSchema,
+  cleanedAnalyzePayloadSchema,
+} = require('./schemas/analyzeSchema');
+const { cleanAnalyzePayload } = require('./services/cleaningService');
 const { analyzeComments } = require('./services/analyzeService');
 
 const app = express();
@@ -33,7 +37,19 @@ app.post('/api/v1/analyze', async (req, res, next) => {
   }
 
   try {
-    const result = await analyzeComments(parsed.data, { requestId });
+    const cleanedPayload = cleanAnalyzePayload(parsed.data);
+    const cleanedParsed = cleanedAnalyzePayloadSchema.safeParse(cleanedPayload);
+
+    if (!cleanedParsed.success) {
+      return res.status(400).json({
+        error_code: 'INVALID_REQUEST',
+        message: 'Request body could not be cleaned into CommentInput schema.',
+        request_id: requestId,
+        details: cleanedParsed.error.flatten(),
+      });
+    }
+
+    const result = await analyzeComments(cleanedParsed.data, { requestId });
 
     return res.status(200).json({
       request_id: requestId,

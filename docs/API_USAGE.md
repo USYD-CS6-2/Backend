@@ -29,9 +29,13 @@ Base URL: `http://localhost:3000/api/v1`
 {
   "source": "youtube",
   "comments": [
-    "This video is very clear.",
-    "Please upload the next episode.",
-    "The summary is helpful."
+    {
+      "author_name": "@demo",
+      "text": "This video is very clear.",
+      "likes": "12",
+      "timestamp": "1 month ago",
+      "platform": "YouTube"
+    }
   ],
   "language": "zh",
   "max_sentences": 3
@@ -41,9 +45,23 @@ Base URL: `http://localhost:3000/api/v1`
 ### Request Schema
 
 - `source`: string, default `"unknown"`, min 1, max 100
-- `comments`: string[], required, min 1 item, max 200 items
+- `comments`: raw comment array from Module A, max 200 cleaned items
 - `language`: enum(`"zh" | "en"`), default `"zh"`
 - `max_sentences`: int, default `3`, range 1-10
+
+The backend cleans raw Module A comments into Module C `CommentInput` objects before calling Agent:
+
+```json
+{
+  "comment_id": "youtube_7c1e20187caf",
+  "text": "This video is very clear.",
+  "likes": 12,
+  "timestamp": "1 month ago",
+  "platform": "YouTube",
+  "context_title": "Unknown Topic",
+  "context_description": ""
+}
+```
 
 ### Success Response
 

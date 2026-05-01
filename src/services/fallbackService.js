@@ -1,6 +1,12 @@
 function buildFallbackSummary(comments, maxSentences) {
   const cleaned = comments
-    .map((item) => item.trim())
+    .map((item) => {
+      if (typeof item === 'string') {
+        return item.trim();
+      }
+
+      return String(item?.text || '').trim();
+    })
     .filter(Boolean)
     .filter((item, index, arr) => arr.indexOf(item) === index);
 
