@@ -38,7 +38,12 @@ async function callAgentAnalyze(payload, context = {}) {
     const response = await fetch(url, {
       method: 'POST',
       headers,
-      body: JSON.stringify(payload),
+      body: JSON.stringify(
+        payload.comments.map((comment) => ({
+          text: comment.text,
+        }))
+      ),
+
       signal: controller.signal,
     });
 
