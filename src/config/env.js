@@ -20,7 +20,7 @@ const config = {
     baseUrl: process.env.AGENT_BASE_URL || 'http://localhost:8001',
     analyzePath: process.env.AGENT_ANALYZE_PATH || '/analyze',
     apiKey: process.env.AGENT_API_KEY || '',
-    timeoutMs: toNumber(process.env.AGENT_TIMEOUT_MS, 8000),
+    timeoutMs: toNumber(process.env.AGENT_TIMEOUT_MS, 15000),
     retryCount: toNumber(process.env.AGENT_RETRY_COUNT, 2),
     retryDelayMs: toNumber(process.env.AGENT_RETRY_DELAY_MS, 1000),
   },
